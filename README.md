@@ -10,6 +10,7 @@ The very broad question we are interested in is, "What makes a Kickstarter proje
 - What are the most popular categories of Kickstarter project over time? Does the popularity of a certain category influence its funding?
 - Does the country from which a Kickstarter is launched significantly affect its success (as measured by funding)?
 - Does the success rate of a Kickstarter change depending on its goal amount (i.e., are $5,000 Kickstarters more funded more reliably than $100,000) Kickstarters?
+- Does the length of a project's funding period affect its funding?
 
 We think this information could be highly pertinent to *anyone* interested in crowdfunding, but we are specifically interested in the success of young companies. For this reason, we may, for instance, choose to constrain the data such that only mid-sized projects are considered.
 
