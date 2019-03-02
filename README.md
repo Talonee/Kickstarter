@@ -17,6 +17,6 @@ We think this information could be highly pertinent to *anyone* interested in cr
 
 Our data is in a (very large) .csv file; so, not an API. We will be reading it into R using the standard read.csv() function. 
 
-We anticipate that the data will need to be permuted in multiple ways -- for instance, for Question #2, we are planning to group Kickstarters by country and display their funding status and amount funded in a world map visualization, which will (most likely) require finding latitudes and longitudes for each country. Separately, the data in Question #3 will be a line plot with "Funding Goal" along the x-axis and "Funded Amount" along the y-axis. 
+We anticipate that the data will need to be permuted in multiple ways -- for instance, for Question #2, we are planning to group Kickstarters by country and display their funding status and amount funded in a world map visualization, which will (most likely) require finding latitudes and longitudes for each country. Separately, the data in Question #3 will be a line plot with "Funding Goal" along the x-axis and "% of Funding Reached" along the y-axis. This would require mutating the data to create a column representing the y-axis' value.
 
 For this project, we will be using Shiny and -- potentially -- Plotly. We anticipate that using Shiny will present some challenges, since none of us have as much experience with it as with, say, ggplot2. 
