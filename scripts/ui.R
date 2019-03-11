@@ -1,6 +1,7 @@
 library(shiny)
 library(plotly)
 library(dplyr)
+library(shinythemes)
 
 ui <- navbarPage(theme=shinytheme("sandstone"),
     "Kickstarter Success",
@@ -195,10 +196,10 @@ ui <- navbarPage(theme=shinytheme("sandstone"),
             em("amount pledged exceeds the initial goal"), "(as seen in the plot 
             above, the ratios between pledged and goal for most countries fall well
             above 100%, even as high as 500%)."),
-          h2("Answer to the Question?"),
+          h2("To Answer the Question?"),
           plotlyOutput("highest"),
           p(
-            "Yes, the country from which a Kickstarter is launched do ", em("significantly"),
+            "Yes, the country from which a Kickstarter is launched does ", em("significantly"),
             "affect its success rate. Countries with ", strong("abundant resources"),
             "(higher number of backers, amount pledged compared to goal, number of overall planned 
             projects, general audience interest, etc.) are bound to receive higher
@@ -212,5 +213,3 @@ ui <- navbarPage(theme=shinytheme("sandstone"),
     #  "Funding Period"
     # )
   )
-)
-)
