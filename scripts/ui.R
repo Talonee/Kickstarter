@@ -3,6 +3,15 @@ library(plotly)
 library(dplyr)
 library(shinythemes)
 
+data <- read.csv("data/ks-data.csv", stringsAsFactors = F)
+
+data$date <- sapply(strsplit(data$launched, " "), head, 1)
+
+cleaned <- data %>%
+  mutate(date = as.Date(date, format = "%Y-%m-%d"))
+
+cleaned$year <- as.numeric(format(cleaned$date, "%Y"))
+
 ui <- navbarPage(
   theme = shinytheme("sandstone"),
   "Kickstarter Success",
@@ -45,7 +54,37 @@ ui <- navbarPage(
     tags$li("Does the country from which a Kickstarter is launched 
               significantly affect its success (as measured by funding)?"),
     tags$li("RUTHVIK PUT YOUR QUESTION HERE")
-  ), tabPanel(
+  ),
+  tabPanel (
+    "Kickstarter Data Insights", 
+    sidebarLayout(
+      sidebarPanel(
+        selectInput("main_category", label = "Choose the Main Category", 
+                    choices = unique(data$main_category)), 
+        selectInput("category", label = "Choose the Category", 
+                    choices = unique(data$category)), 
+        sliderInput("year", label = "Years of Interest", 
+                    value = range(cleaned$year), min = range(cleaned$year)[1], 
+                    max = range(cleaned$year)[2]),
+        sliderInput("backers", label= "Number of Backers", 
+                    value = range(cleaned$backers), 
+                    min = range(cleaned$backers)[1], 
+                    max = range(cleaned$backers)[2]), 
+        sliderInput("pledged", label = "Amount Pledged", 
+                    value = range(cleaned$usd_pledged_real), 
+                    min = range(cleaned$usd_pledged_real)[1], 
+                    max = range(cleaned$usd_pledged_real)[2]), 
+        sliderInput("goal", label = "Goal Amount", 
+                    value = range(cleaned$usd_goal_real), 
+                    min = range(cleaned$usd_goal_real)[1], 
+                    max = range(cleaned$usd_goal_real)[2])
+      ), 
+      mainPanel(
+        tableOutput("table")
+      )
+    )
+  ),
+  tabPanel(
     "Category",
     titlePanel(
       "Kickstarter by Category"
@@ -212,7 +251,4 @@ ui <- navbarPage(
     )
   )
   # ruthvik's viz
-  # , tabPanel (
-  #  "Funding Period"
-  # )
 )
