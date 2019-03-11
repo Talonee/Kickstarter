@@ -210,13 +210,7 @@ ui <- navbarPage(theme=shinytheme("sandstone"),
     # ruthvik's viz
     # , tabPanel (
     #  "Funding Period"
-<<<<<<< HEAD
     # )
   )
 )
-=======
-    #), tabPanel (
-    #  "Country"
-    #)
 )
->>>>>>> baa18a502c9db02b928ac38f99dcdeb3f1591823
