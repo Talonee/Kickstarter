@@ -245,4 +245,17 @@ server <- function(input, output) {
   })
 
   ########################## Ruthvik ##########################
+  output$table <- renderTable({
+    display_data <- cleaned %>%
+      filter(main_category == input$main_category, 
+             category == input$category, 
+             year >= input$year[1] & year <= input$year[2], 
+             backers >= input$backers[1] & backers <= input$backers[2], 
+             usd_pledged_real >= input$pledged[1] & 
+               usd_pledged_real <= input$pledged[2],
+             usd_goal_real >= input$goal[1] & 
+               usd_goal_real <= input$goal[2]) %>%
+      select(name, category, main_category, backers, country, 
+             usd_pledged_real, usd_goal_real, launched, deadline)
+  })
 }
