@@ -6,6 +6,8 @@ library(plotly)
 library(shiny)
 library(jsonlite)
 
+options(warn = -1)
+
 server <- function(input, output) {
     ########################## Cynthia ##########################
   
@@ -41,9 +43,9 @@ server <- function(input, output) {
                  x = ~category,
                  y = ~get(paste0("proj_", input$first_year)),
                  name = input$first_year, 
-                 type = "bar") %>%
+                 type = "bar", color = I("#52AA5E")) %>%
       add_trace(y = ~get(paste0("proj_", input$second_year)),
-                name = input$second_year) %>%
+                name = input$second_year, color = I("#388659")) %>%
       layout(title = "Popularity of Kickstarter Categories", 
              xaxis = list(title = "Category"), 
              yaxis = list(title = "# of Projects"))
@@ -73,9 +75,9 @@ server <- function(input, output) {
                    x = ~category, 
                    y = ~get(paste0("pct_funded_", input$first_year)),
                    name = input$first_year,
-                   type = "bar") %>%
+                   type = "bar", color = I("#779CAB")) %>%
         add_trace(y = ~get(paste0("pct_funded_", input$second_year)),
-                   name = input$second_year) %>%
+                   name = input$second_year, color = I("#35524A")) %>%
         layout(title = paste(input$med_or_mean, "% Funded per Category"),
                xaxis = list(title = "Category"),
                yaxis = list(title = paste(input$med_or_mean, "% Funded")))

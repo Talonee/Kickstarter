@@ -1,0 +1,12 @@
+name: scripts
+title: scripts
+username:
+account: rosefinch32
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 779852
+bundleId: 1929378
+url: https://rosefinch32.shinyapps.io/scripts/
+when: 1552263902.76679
+asMultiple: FALSE
+asStatic: FALSE
