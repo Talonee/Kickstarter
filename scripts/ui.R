@@ -1,12 +1,15 @@
 library(shiny)
+library(shinythemes)
 library(plotly)
 library(dplyr)
 
-ui <- fluidPage(
+ui <- fluidPage(theme=shinytheme("sandstone"),
   navbarPage(
     "Kickstarter Success",
     tabPanel(
       "Overview",
+      tags$div(HTML('<center><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR25mU6zMb91sgzGWyt0zZDQujO_kPkUoR3LUSMC3hVF9CwpA-ETg"
+                    width="100"></center>')),
       tags$h2("What Makes a Successful Kickstarter?"),
       tags$em("Ruthvik, Cynthia, & Talon"),
       p(),
@@ -37,7 +40,7 @@ ui <- fluidPage(
               through 2018, it was collected early in the year, so the last
               complete year of data is 2017. Using this dataset, we hope to
               answer the following."),
-      tags$h3("Questions:"),
+      tags$h3("Questions"),
       tags$li("What types -- categories -- of Kickstarter are most popular in
                each year? Does a category's popularity by number of projects
                effect its funding?"),
