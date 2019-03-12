@@ -281,7 +281,7 @@ server <- function(input, output) {
                usd_goal_real <= input$goal[2]) %>%
       select(name, category, main_category, backers, country,
              usd_pledged_real, usd_goal_real, year2) %>%
-      head(40)
+      head(30)
 
     colnames(display_data) <- c("Name", "Category", "Main Category",
                                 "Number of Backers", "Country",
