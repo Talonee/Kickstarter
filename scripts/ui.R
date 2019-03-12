@@ -14,6 +14,15 @@ cleaned$year <- as.numeric(format(cleaned$date, "%Y"))
 
 latest_data <- cleaned %>% filter(year != 1970)
 
+choose_maincateg <- function(input_name){
+  selectInput(input_name, 
+              label = "Choose the Main Category",
+              choices = unique(latest_data$main_category))
+}
+  
+choose_categ <- selectInput("category", label = "Choose the Category",
+                            choices = unique(latest_data$category))
+
 ui <- navbarPage(
   theme = shinytheme("sandstone"),
   "Kickstarter Success",
@@ -66,10 +75,7 @@ ui <- navbarPage(
         tableOutput("table")
       ),
       sidebarPanel(
-        selectInput("main_category", label = "Choose the Main Category",
-                    choices = unique(latest_data$main_category)),
-        selectInput("category", label = "Choose the Category",
-                    choices = unique(latest_data$category)),
+        choose_maincateg("main_cat1"),
         sliderInput("year", label = "Years of Interest",
                     value = range(latest_data$year),
                     min = range(latest_data$year)[1],
@@ -281,6 +287,18 @@ ui <- navbarPage(
         )
       )
     )
-    # ruthvik's viz
+  ),
+  # ruthvik's viz
+  tabPanel(
+    "3D Plot",
+    titlePanel("Determining the Pledged Amount"),
+    sidebarLayout(
+      sidebarPanel(
+        choose_maincateg("main_cat2")
+      ),
+      mainPanel(
+        plotlyOutput("threed")
+      )
+    )
   )
 )

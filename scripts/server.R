@@ -17,6 +17,8 @@ server <- function(input, output) {
 
   cleaned <- data %>%
     mutate(date = as.Date(date, format = "%Y-%m-%d"))
+  
+  time_data <- cleaned
 
   cleaned$year <- as.numeric(format(cleaned$date, "%Y"))
 
@@ -267,12 +269,12 @@ server <- function(input, output) {
   })
 
   ########################## Ruthvik ##########################
+
   output$table <- renderTable({
     year_data <- cleaned %>%
       mutate(year2 = format(cleaned$date, "%Y"))
     display_data <- year_data %>%
-      filter(main_category == input$main_category,
-             category == input$category,
+      filter(main_category == input$main_cat1,
              year >= input$year[1] & year <= input$year[2],
              backers >= input$backers[1] & backers <= input$backers[2],
              usd_pledged_real >= input$pledged[1] &
@@ -289,4 +291,35 @@ server <- function(input, output) {
                                 "Year")
     display_data
   }, width = 80, bordered = F)
+  
+  output$threed <- renderPlotly({
+    time_data$deadline <- as.Date(time_data$deadline, format = "%Y-%m-%d")
+    time_data$time <- ( (time_data$deadline - time_data$date) * 24 * 60 )
+    
+    categorised <- time_data %>%
+      filter(main_category == input$main_cat2)
+    
+    chart <- plot_ly(x = ~categorised$usd_pledged_real,
+            y = ~categorised$backers,
+            z = ~categorised$time) %>%
+      add_markers() %>%
+      layout(
+        title = "Pledged Amount",
+        scene = list(
+          xaxis =list(title = "Pledged Amount (USD)"),
+          yaxis = list(title = "Number of backers"),
+          zaxis = list(title = "Time taken for the project (in miniutes)"),
+          annotations = list(
+            x = 1.13,
+            y = 1.05,
+            text = 'Miles/(US) gallon',
+            xref = 'paper',
+            yref = 'paper',
+            showarrow = FALSE
+          )
+        )
+      )
+    
+    chart
+  })
 }
