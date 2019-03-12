@@ -52,33 +52,45 @@ ui <- navbarPage(
                each year? Does a category's popularity by number of projects
                effect its funding?"),
     tags$li("Does the country from which a Kickstarter is launched 
-              significantly affect its success (as measured by funding)?"),
+              significantly affect its project success rate (as measured by funding)?"),
     tags$li("RUTHVIK PUT YOUR QUESTION HERE")
   ),
-  tabPanel (
-    "Kickstarter Data Insights", 
+  tabPanel(
+    "Kickstarter Data Insights",
     sidebarLayout(
       sidebarPanel(
-        selectInput("main_category", label = "Choose the Main Category", 
-                    choices = unique(data$main_category)), 
-        selectInput("category", label = "Choose the Category", 
-                    choices = unique(data$category)), 
-        sliderInput("year", label = "Years of Interest", 
-                    value = range(cleaned$year), min = range(cleaned$year)[1], 
-                    max = range(cleaned$year)[2]),
-        sliderInput("backers", label= "Number of Backers", 
-                    value = range(cleaned$backers), 
-                    min = range(cleaned$backers)[1], 
-                    max = range(cleaned$backers)[2]), 
-        sliderInput("pledged", label = "Amount Pledged", 
-                    value = range(cleaned$usd_pledged_real), 
-                    min = range(cleaned$usd_pledged_real)[1], 
-                    max = range(cleaned$usd_pledged_real)[2]), 
-        sliderInput("goal", label = "Goal Amount", 
-                    value = range(cleaned$usd_goal_real), 
-                    min = range(cleaned$usd_goal_real)[1], 
-                    max = range(cleaned$usd_goal_real)[2])
-      ), 
+        selectInput("main_category",
+          label = "Choose the Main Category",
+          choices = unique(data$main_category)
+        ),
+        selectInput("category",
+          label = "Choose the Category",
+          choices = unique(data$category)
+        ),
+        sliderInput("year",
+          label = "Years of Interest",
+          value = range(cleaned$year), min = range(cleaned$year)[1],
+          max = range(cleaned$year)[2]
+        ),
+        sliderInput("backers",
+          label = "Number of Backers",
+          value = range(cleaned$backers),
+          min = range(cleaned$backers)[1],
+          max = range(cleaned$backers)[2]
+        ),
+        sliderInput("pledged",
+          label = "Amount Pledged",
+          value = range(cleaned$usd_pledged_real),
+          min = range(cleaned$usd_pledged_real)[1],
+          max = range(cleaned$usd_pledged_real)[2]
+        ),
+        sliderInput("goal",
+          label = "Goal Amount",
+          value = range(cleaned$usd_goal_real),
+          min = range(cleaned$usd_goal_real)[1],
+          max = range(cleaned$usd_goal_real)[2]
+        )
+      ),
       mainPanel(
         tableOutput("table")
       )
@@ -200,7 +212,8 @@ ui <- navbarPage(
           choices = list(
             "Number of backers" = "backers",
             "Amount pledged (in USD)" = "pledged",
-            "Goal amount (in USD)" = "goal"
+            "Goal amount (in USD)" = "goal",
+            "Total projects" = "tote"
           ),
           selected = "backers"
         ),
@@ -214,7 +227,7 @@ ui <- navbarPage(
           ),
           selected = "backers"
         ),
-        em("*In order to make a more compelling argument,
+        tags$em("*In order to make a more compelling argument,
            the United States of America has the option to be
            disqualified as its data values are so large that
            other countries often become obscure and difficult to 
@@ -223,43 +236,58 @@ ui <- navbarPage(
       mainPanel(
         h2("Kickstarter Sum Statistic between Countries"),
         plotlyOutput("sumplot"),
-        p("The US dominates all other countries by an astronomical amount
-             in terms of total backers, amount pledged, and goal amount needed 
-             for the project."),
+        p(strong("Include USA: "), "The US dominates all other countries by 
+             an astronomical margin in terms of total backers, amount pledged,
+             and goal amount needed for the project."),
+        p(strong("Non USA: "), "Other first countries such as UK, Canada and 
+             Australia also hold the highest spots across all source for
+             total funding."),
+        p(strong("Hypothesis: "), "First world countries has the ability to 
+             invest a lot more in funding, which translates to higher 
+             success rates for projects."),
         p(),
         p(),
         h2("Kickstarter Mean Statistic between Countries"),
         plotlyOutput("meanplot"),
-        p("However,  when comparing average backers, pledged, and 
-             goal. The US falls about the middle of every other countries. 
-             Interestingly enough, countries like Austria & Switcher, who carry
-             the highest mean of backers, pledged, goal, fall at the bottom range
-             in numbers of successful projects. But perhaps, this data means nothing
-             as there's a possibility that these countries simply do not produce as 
-             many projects but invest a lot into what they do have and, thus, their 
-             averages are much higher."),
+        p(strong("Hypothesis: "), "Countries with higher average support
+          sources means their projects are generally more desired, 
+          which means there are higher success rates for projects."),
         p(),
         p(),
         h2("Kickstarter Funding Ratio"),
         plotlyOutput("percent"),
-        p(
-          "But with all that being said, we can come to a general consesus that, 
-            there's a higher chance of project becoming successful when the ",
-          em("amount pledged exceeds the initial goal"), "(as seen in the plot 
-            above, the ratios between pledged and goal for most countries fall well
-            above 100%, even as high as 500%)."
-        ),
+        p("Hong Kong, Austria, and Singapore are the top contenders for having
+            the highest funding relatives to their projected goals"),
+        p(strong("Hypothesis: "), "Countries with higher funding ratio means
+          higher number of projects with more than enough resources needed to 
+          accomplish their goals, which translates to higher success rates."),
         h2("To Answer the Question?"),
+        h4("Does the country from which a Kickstarter is launched significantly
+           affect its project success rate (as measured by funding)?"),
         plotlyOutput("highest"),
         p(
-          "Yes, the country from which a Kickstarter is launched does ", em("significantly"),
-          "affect its success rate. Countries with ", strong("abundant resources"),
-          "(higher number of backers, amount pledged compared to goal, number of overall planned 
-            projects, general audience interest, etc.) are bound to receive higher
-            success rates, as seen in US's statistic."
+          "The data presented are interesting to say the least, different countries 
+          excel in different areas, they all seem to have an equal potential source 
+          of what, thereotically, would produce the highest rates of successful
+          projects."
+        ),
+        p(h3("Conclusion: ")),
+        p(
+          "The answer varies, especially since the data for mean statistic varies
+          greatly across countries. In the case of Singapore and Hong Kong, 
+          countries with higher fulfillment rate in their funding ratio will 
+          have a higher success rate. In the case of the US and UK, countries with ",
+          tags$em("abundant resources"), "(higher number of backers, amount 
+          pledged compared to goal, number of overall planned projects, etc.) 
+          are bound to receive higher success rates. In the case of Japan, their rate
+          is simply high because they have very few projects to begin with. No
+          single country dominates across all data enough to determine a definite
+          success rates for projects base on countries. There are too many factors to
+          consider that affect the success rate of a project: government funding, 
+          number of projects, economy, backers, audience interest, etc."
         )
       )
     )
+    # ruthvik's viz
   )
-  # ruthvik's viz
 )

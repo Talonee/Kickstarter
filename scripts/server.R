@@ -119,9 +119,8 @@ server <- function(input, output) {
 
   ########################## Talon ##########################
 
-  dataset <- data %>%
-    filter(state == "live" | state == "successful")
-  
+  dataset <- data
+
   # Convert ISO2 to ISO3 and combine into the dataset
   iso_json <- as.data.frame(fromJSON("http://country.io/iso3.json"), stringsAsFactors = F)
   iso_convert <- data.frame("ISO2" = colnames(iso_json), "ISO3" = unname(unlist(iso_json[1, ])))
@@ -146,38 +145,44 @@ server <- function(input, output) {
       name, category, main_category, state, backers,
       usd_pledged_real, usd_goal_real, ISO3, country_full
     )
-  
+
   col_scheme <- "Spectral"
-  
+
   # Select relevant features
   sum_by_country <- dataset %>%
     group_by(country_full) %>%
     summarize(
-      backers = sum(backers),
-      pledged = sum(usd_pledged_real),
-      goal = sum(usd_goal_real)
+      backers = round(sum(backers)),
+      pledged = round(sum(usd_pledged_real), 2),
+      goal = round(sum(usd_goal_real), 2)
     )
+
+  total_proj <- dataset %>%
+    group_by(country_full) %>%
+    summarize(tote = n())
+
+  sum_by_country <- left_join(sum_by_country, total_proj, by = "country_full")
 
   output$sumplot <- renderPlotly({
     if (!input$usa) {
-      sum_by_country <- sum_by_country %>% 
+      sum_by_country <- sum_by_country %>%
         filter(country_full != "United States of America")
       col_scheme <- "RdPu"
     }
-    
+
     p <- plot_ly(
       sum_by_country,
       x = ~ get(input$sum),
       type = "bar",
       color = ~country_full,
       colors = col_scheme,
-      text = ~paste0(
+      text = ~ paste0(
         "Country: ", country_full,
         "\nSum value of: ", get(input$sum)
       )
     ) %>%
       layout(
-        title = paste0("Kickstarter Sum Statistic"),
+        title = paste0("Total Stat by Country"),
         xaxis = list(title = "Sum Value")
       )
     p
@@ -186,31 +191,25 @@ server <- function(input, output) {
   mean_by_country <- dataset %>%
     group_by(country_full) %>%
     summarize(
-      backers = mean(backers),
-      pledged = mean(usd_pledged_real),
-      goal = mean(usd_goal_real)
+      backers = round(mean(backers)),
+      pledged = round(mean(usd_pledged_real), 2),
+      goal = round(mean(usd_goal_real), 2)
     )
 
   output$meanplot <- renderPlotly({
-    if (!input$usa) {
-      mean_by_country <- mean_by_country %>% 
-        filter(country_full != "United States of America")
-      col_scheme <- "GnBu"
-    }
-    
     p <- plot_ly(
       mean_by_country,
       x = ~ get(input$mean),
       type = "bar",
       color = ~country_full,
-      colors = col_scheme,
-      text = ~paste0(
+      colors = "Spectral",
+      text = ~ paste0(
         "Country: ", country_full,
         "\nMean value of: ", get(input$mean)
       )
     ) %>%
       layout(
-        title = paste0("Kickstarter Mean Statistic"),
+        title = paste0("Average Stat by Country"),
         xaxis = list(title = "Mean Value")
       )
   })
@@ -220,73 +219,68 @@ server <- function(input, output) {
     summarize(perc = round(sum(usd_pledged_real) / sum(usd_goal_real) * 100, 2))
 
   output$percent <- renderPlotly({
-    if (!input$usa) {
-      per_met <- per_met %>% 
-        filter(country_full != "United States of America")
-      col_scheme <- "OrRd"
-    }
-    
     plot_ly(
       per_met,
       x = ~perc,
       type = "bar",
       color = ~country_full,
-      colors = col_scheme,
-      text = ~paste0(
-        "Percentage funding: ", perc, "%"
+      colors = "Spectral",
+      text = ~ paste0(
+        "Country: ", country_full,
+        "\nPercentage funding: ", perc, "%"
       )
     ) %>%
       layout(
-        title = paste0("Funding Ratio of Successful Projects"),
+        title = paste0("Overall Funding Ratio by Country (Need vs. Goal)"),
         xaxis = list(title = "Percent")
       )
   })
 
-  success_amt <- dataset %>%
+  succ_rate <- dataset %>%
+    filter(state == "live" | state == "successful") %>%
     group_by(country_full) %>%
     summarize(num = n())
 
+  succ_rate <- left_join(succ_rate, total_proj, by = "country_full")
+  succ_rate$ratio <- round(succ_rate$num / succ_rate$tote * 100, 2)
+
   output$highest <- renderPlotly({
-    if (!input$usa) {
-      success_amt <- success_amt %>% 
-        filter(country_full != "United States of America")
-      sum_by_country <- sum_by_country %>% 
-        filter(country_full != "United States of America")
-      col_scheme <- "Greens"
-    }
-    
     plot_ly(
-      success_amt,
-      x = ~num,
+      succ_rate,
+      x = ~ratio,
       type = "bar",
       color = ~country_full,
-      colors = col_scheme,
-      text = ~paste0(
+      colors = "Spectral",
+      text = ~ paste0(
         "Country: ", country_full,
-        "\nTotal successful projects: ", num,
+        "\nSuccess rate: ", ratio, "%",
         "\nTotal number of backers: ", sum_by_country$backers,
         "\nTotal amount pledged (in USD): $", sum_by_country$pledged,
         "\nTotal goal amount (in USD): $", sum_by_country$goal
       )
     ) %>%
       layout(
-        title = paste0("Number of Successful Projects"),
-        xaxis = list(title = "Total Amount")
+        title = paste0("Success Rates"),
+        xaxis = list(title = "Percentage")
       )
   })
 
   ########################## Ruthvik ##########################
   output$table <- renderTable({
     display_data <- cleaned %>%
-      filter(main_category == input$main_category, 
-             category == input$category, 
-             year >= input$year[1] & year <= input$year[2], 
-             backers >= input$backers[1] & backers <= input$backers[2], 
-             usd_pledged_real >= input$pledged[1] & 
-               usd_pledged_real <= input$pledged[2],
-             usd_goal_real >= input$goal[1] & 
-               usd_goal_real <= input$goal[2]) %>%
-      select(name, category, main_category, backers, country, 
-             usd_pledged_real, usd_goal_real, launched, deadline)
+      filter(
+        main_category == input$main_category,
+        category == input$category,
+        year >= input$year[1] & year <= input$year[2],
+        backers >= input$backers[1] & backers <= input$backers[2],
+        usd_pledged_real >= input$pledged[1] &
+          usd_pledged_real <= input$pledged[2],
+        usd_goal_real >= input$goal[1] &
+          usd_goal_real <= input$goal[2]
+      ) %>%
+      select(
+        name, category, main_category, backers, country,
+        usd_pledged_real, usd_goal_real, launched, deadline
+      )
   })
 }
