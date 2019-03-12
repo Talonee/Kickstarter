@@ -188,6 +188,12 @@ ui <- navbarPage(
     ),
     sidebarLayout(
       sidebarPanel(
+        style = "position:fixed;width:30%;",
+        checkboxInput(
+          "usa",
+          label = strong("Include the United States of America*"),
+          value = TRUE
+        ),
         radioButtons(
           "sum",
           label = strong("Sum:"),
@@ -207,7 +213,12 @@ ui <- navbarPage(
             "Goal amount (in USD)" = "goal"
           ),
           selected = "backers"
-        )
+        ),
+        em("*In order to make a more compelling argument,
+           the United States of America has the option to be
+           disqualified as its data values are so large that
+           other countries often become obscure and difficult to 
+           identify, which makes the statistics less useful.")
       ),
       mainPanel(
         h2("Kickstarter Sum Statistic between Countries"),
@@ -245,7 +256,7 @@ ui <- navbarPage(
           "affect its success rate. Countries with ", strong("abundant resources"),
           "(higher number of backers, amount pledged compared to goal, number of overall planned 
             projects, general audience interest, etc.) are bound to receive higher
-            success rates, as seen in US's sum statistic."
+            success rates, as seen in US's statistic."
         )
       )
     )
