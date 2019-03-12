@@ -121,7 +121,7 @@ server <- function(input, output) {
 
   dataset <- data %>%
     filter(state == "live" | state == "successful")
-
+  
   # Convert ISO2 to ISO3 and combine into the dataset
   iso_json <- as.data.frame(fromJSON("http://country.io/iso3.json"), stringsAsFactors = F)
   iso_convert <- data.frame("ISO2" = colnames(iso_json), "ISO3" = unname(unlist(iso_json[1, ])))
@@ -146,7 +146,9 @@ server <- function(input, output) {
       name, category, main_category, state, backers,
       usd_pledged_real, usd_goal_real, ISO3, country_full
     )
-
+  
+  col_scheme <- "Spectral"
+  
   # Select relevant features
   sum_by_country <- dataset %>%
     group_by(country_full) %>%
@@ -157,14 +159,21 @@ server <- function(input, output) {
     )
 
   output$sumplot <- renderPlotly({
+    if (!input$usa) {
+      sum_by_country <- sum_by_country %>% 
+        filter(country_full != "United States of America")
+      col_scheme <- "RdPu"
+    }
+    
     p <- plot_ly(
       sum_by_country,
       x = ~ get(input$sum),
       type = "bar",
       color = ~country_full,
-      colors = "Spectral",
-      text = ~ paste0(
-        "Sum value of: ", get(input$sum)
+      colors = col_scheme,
+      text = ~paste0(
+        "Country: ", country_full,
+        "\nSum value of: ", get(input$sum)
       )
     ) %>%
       layout(
@@ -183,14 +192,21 @@ server <- function(input, output) {
     )
 
   output$meanplot <- renderPlotly({
+    if (!input$usa) {
+      mean_by_country <- mean_by_country %>% 
+        filter(country_full != "United States of America")
+      col_scheme <- "GnBu"
+    }
+    
     p <- plot_ly(
       mean_by_country,
       x = ~ get(input$mean),
       type = "bar",
       color = ~country_full,
-      colors = "Spectral",
-      text = ~ paste0(
-        "Mean value of: ", get(input$mean)
+      colors = col_scheme,
+      text = ~paste0(
+        "Country: ", country_full,
+        "\nMean value of: ", get(input$mean)
       )
     ) %>%
       layout(
@@ -204,17 +220,20 @@ server <- function(input, output) {
     summarize(perc = round(sum(usd_pledged_real) / sum(usd_goal_real) * 100, 2))
 
   output$percent <- renderPlotly({
+    if (!input$usa) {
+      per_met <- per_met %>% 
+        filter(country_full != "United States of America")
+      col_scheme <- "OrRd"
+    }
+    
     plot_ly(
       per_met,
       x = ~perc,
       type = "bar",
       color = ~country_full,
-      colors = "Spectral",
-      text = paste0(
-        "Percentage funding to goal: ", per_met$perc, "%",
-        "\nTotal number of backers: ", sum_by_country$backers,
-        "\nTotal amount pledged (in USD): $", sum_by_country$pledged,
-        "\nTotal goal amount (in USD): $", sum_by_country$goal
+      colors = col_scheme,
+      text = ~paste0(
+        "Percentage funding: ", perc, "%"
       )
     ) %>%
       layout(
@@ -228,14 +247,26 @@ server <- function(input, output) {
     summarize(num = n())
 
   output$highest <- renderPlotly({
+    if (!input$usa) {
+      success_amt <- success_amt %>% 
+        filter(country_full != "United States of America")
+      sum_by_country <- sum_by_country %>% 
+        filter(country_full != "United States of America")
+      col_scheme <- "Greens"
+    }
+    
     plot_ly(
       success_amt,
       x = ~num,
       type = "bar",
       color = ~country_full,
-      colors = "Spectral",
-      text = paste0(
-        "Total: ", success_amt$num
+      colors = col_scheme,
+      text = ~paste0(
+        "Country: ", country_full,
+        "\nTotal successful projects: ", num,
+        "\nTotal number of backers: ", sum_by_country$backers,
+        "\nTotal amount pledged (in USD): $", sum_by_country$pledged,
+        "\nTotal goal amount (in USD): $", sum_by_country$goal
       )
     ) %>%
       layout(
