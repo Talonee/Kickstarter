@@ -105,7 +105,8 @@ server <- function(input, output) {
     avg <- avg_by_category[avg_by_category$main_category == category, "Mean"]
     med <- avg_by_category[avg_by_category$main_category == category, "Median"]
 
-    phrase <- paste0("mean, median goal for ", category, ": $", round(avg), ", $", round(med))
+    phrase <- paste0("mean, median goal for ", category, ": $", round(avg), 
+                     ", $", round(med))
     phrase
   }
 
