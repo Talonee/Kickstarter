@@ -246,7 +246,9 @@ server <- function(input, output) {
 
   ########################## Ruthvik ##########################
   output$table <- renderTable({
-    display_data <- cleaned %>%
+    year_data <- cleaned %>%
+      mutate(year2 = format(cleaned$date, "%Y"))
+    display_data <- year_data %>%
       filter(main_category == input$main_category, 
              category == input$category, 
              year >= input$year[1] & year <= input$year[2], 
@@ -256,6 +258,13 @@ server <- function(input, output) {
              usd_goal_real >= input$goal[1] & 
                usd_goal_real <= input$goal[2]) %>%
       select(name, category, main_category, backers, country, 
-             usd_pledged_real, usd_goal_real, launched, deadline)
-  })
+             usd_pledged_real, usd_goal_real, year2) %>%
+      head(40)
+    
+    colnames(display_data) <- c("Name", "Category", "Main Category", 
+                                "Number of Backers", "Country", 
+                                "Amount Pledged (USD)", "Goal Amount (USD)",
+                                "Year")
+    display_data
+  }, width = 80, bordered = F)
 }

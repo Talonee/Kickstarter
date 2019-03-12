@@ -12,6 +12,8 @@ cleaned <- data %>%
 
 cleaned$year <- as.numeric(format(cleaned$date, "%Y"))
 
+latest_data <- cleaned %>% filter(year != 1970)
+
 ui <- navbarPage(
   theme = shinytheme("sandstone"),
   "Kickstarter Success",
@@ -56,31 +58,34 @@ ui <- navbarPage(
     tags$li("RUTHVIK PUT YOUR QUESTION HERE")
   ),
   tabPanel (
-    "Kickstarter Data Insights", 
+    "Data Insights", 
     sidebarLayout(
+      mainPanel(
+        style = "overflow-y:scroll; max-height: 1000px",
+        titlePanel("Kickstarter Data (2009-2018)"),
+        tableOutput("table")
+      ), 
       sidebarPanel(
         selectInput("main_category", label = "Choose the Main Category", 
-                    choices = unique(data$main_category)), 
+                    choices = unique(latest_data$main_category)), 
         selectInput("category", label = "Choose the Category", 
-                    choices = unique(data$category)), 
+                    choices = unique(latest_data$category)), 
         sliderInput("year", label = "Years of Interest", 
-                    value = range(cleaned$year), min = range(cleaned$year)[1], 
-                    max = range(cleaned$year)[2]),
+                    value = range(latest_data$year), 
+                    min = range(latest_data$year)[1],
+                    max = range(latest_data$year)[2]),
         sliderInput("backers", label= "Number of Backers", 
-                    value = range(cleaned$backers), 
-                    min = range(cleaned$backers)[1], 
-                    max = range(cleaned$backers)[2]), 
+                    value = range(latest_data$backers), 
+                    min = range(latest_data$backers)[1], 
+                    max = range(latest_data$backers)[2]), 
         sliderInput("pledged", label = "Amount Pledged", 
-                    value = range(cleaned$usd_pledged_real), 
-                    min = range(cleaned$usd_pledged_real)[1], 
-                    max = range(cleaned$usd_pledged_real)[2]), 
+                    value = range(latest_data$usd_pledged_real), 
+                    min = range(latest_data$usd_pledged_real)[1], 
+                    max = range(latest_data$usd_pledged_real)[2]), 
         sliderInput("goal", label = "Goal Amount", 
-                    value = range(cleaned$usd_goal_real), 
-                    min = range(cleaned$usd_goal_real)[1], 
-                    max = range(cleaned$usd_goal_real)[2])
-      ), 
-      mainPanel(
-        tableOutput("table")
+                    value = range(latest_data$usd_goal_real), 
+                    min = range(latest_data$usd_goal_real)[1], 
+                    max = range(latest_data$usd_goal_real)[2])
       )
     )
   ),
