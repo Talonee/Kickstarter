@@ -274,7 +274,7 @@ server <- function(input, output) {
     year_data <- cleaned %>%
       mutate(year2 = format(cleaned$date, "%Y"))
     display_data <- year_data %>%
-      filter(main_category == input$main_cat1,
+      filter(main_category == input$main_categ1,
              year >= input$year[1] & year <= input$year[2],
              backers >= input$backers[1] & backers <= input$backers[2],
              usd_pledged_real >= input$pledged[1] &
@@ -294,21 +294,31 @@ server <- function(input, output) {
   
   output$threed <- renderPlotly({
     time_data$deadline <- as.Date(time_data$deadline, format = "%Y-%m-%d")
-    time_data$time <- ( (time_data$deadline - time_data$date) * 24 * 60 )
+    time_data$time <- ( (time_data$deadline - time_data$date))
     
     categorised <- time_data %>%
-      filter(main_category == input$main_cat2)
+      filter(main_category == input$main_categ2)
     
-    chart <- plot_ly(x = ~categorised$usd_pledged_real,
-            y = ~categorised$backers,
-            z = ~categorised$time) %>%
+    chart <- plot_ly(
+      data = categorised,
+      x = ~usd_pledged_real,
+      y = ~backers,
+      z = ~time,
+      color = ~category,
+      hoverinfo = "text",
+      text = ~paste("</br> Category: ", category,
+                    "</br> Pledged Amount (USD): ", usd_pledged_real,
+                    "</br> Number of backers: ", backers,
+                    "</br> Time: ", time) 
+      ) %>%
       add_markers() %>%
       layout(
         title = "Pledged Amount",
         scene = list(
           xaxis =list(title = "Pledged Amount (USD)"),
           yaxis = list(title = "Number of backers"),
-          zaxis = list(title = "Time taken for the project (in miniutes)"),
+          zaxis = list(title = "Time"),
+          marker = list(color = categorised$category),
           annotations = list(
             x = 1.13,
             y = 1.05,

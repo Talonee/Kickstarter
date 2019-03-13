@@ -75,7 +75,7 @@ ui <- navbarPage(
         tableOutput("table")
       ),
       sidebarPanel(
-        choose_maincateg("main_cat1"),
+        choose_maincateg("main_categ1"),
         sliderInput("year", label = "Years of Interest",
                     value = range(latest_data$year),
                     min = range(latest_data$year)[1],
@@ -294,7 +294,7 @@ ui <- navbarPage(
     titlePanel("Determining the Pledged Amount"),
     sidebarLayout(
       sidebarPanel(
-        choose_maincateg("main_cat2")
+        choose_maincateg("main_categ2")
       ),
       mainPanel(
         plotlyOutput("threed")
