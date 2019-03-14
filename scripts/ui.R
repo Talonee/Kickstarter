@@ -3,6 +3,8 @@ library(plotly)
 library(dplyr)
 library(shinythemes)
 
+# reading in the data and munging it as required
+
 data <- read.csv("data/ks-data.csv", stringsAsFactors = F)
 
 data$date <- sapply(strsplit(data$launched, " "), head, 1)
@@ -14,17 +16,18 @@ cleaned$year <- as.numeric(format(cleaned$date, "%Y"))
 
 latest_data <- cleaned %>% filter(year != 1970)
 
-choose_maincateg <- function(input_name){
+# a function that displays a select box
+choose_maincateg <- function(input_name) {
   selectInput(input_name,
-              label = "Choose the Main Category",
-              choices = unique(latest_data$main_category))
+    label = "Choose the Main Category",
+    choices = unique(latest_data$main_category)
+  )
 }
 
-choose_categ <- selectInput("category", label = "Choose the Category",
-                            choices = unique(latest_data$category))
-
+# Define a UI using a `navbarPage()` layout with the required
+# tabs and content:
 ui <- navbarPage(
-  theme = shinytheme("cyborg"),
+  theme = shinytheme("cosmo"),
   "Kickstarter Success",
   tabPanel(
     "Overview",
@@ -52,13 +55,18 @@ ui <- navbarPage(
               success? Let's find out."),
     p(),
     tags$h3("Our Data"),
-    tags$p("We are using a very large dataset -- more than 300,000 rows -- of
-              Kickstarter data, published on, ", tags$a(href = "google.com", "Kaggle"),
-              "by", tags$a(href="https://www.kaggle.com/kemical", "Mikael Mouille"), 
-              "with assistance from Anton Savchenko. While the data is technically
-              through 2018, it was collected early in the year, so the last 
-              complete year of data is 2017. Using this dataset, we hope to
-              answer the following."),
+    tags$p(
+      "We are using a very large dataset -- more than 300,000 rows -- of
+              Kickstarter data, published on, ", tags$a(
+        href = "google.com",
+        "Kaggle"
+      ),
+      "by", tags$a(href = "https://www.kaggle.com/kemical", "Mikael Mouille"),
+      "with assistance from Anton Savchenko. While the data is technically
+       through 2018, it was collected early in the year, so the last
+       complete year of data is 2017. Using this dataset, we hope to
+       answer the following."
+    ),
     tags$h3("Questions:"),
     tags$li("What types -- categories -- of Kickstarter are most popular in
                each year? Does a category's popularity by number of projects
@@ -154,9 +162,9 @@ ui <- navbarPage(
         p(),
 
         p(
-          "There are many reasons more popular categories like Film and Technology
-             see less success. Market saturation is a concern, but also, these types
-             of projects are usually much more expensive
+          "There are many reasons more popular categories like Film and
+             Technology see less success. Market saturation is a concern, but
+             also, these types of projects are usually much more expensive
              than the typical Comic-type project
              (", textOutput("technology", inline = T), "; ",
           textOutput("comics", inline = T), "). Creators would be prudent to
@@ -239,26 +247,28 @@ ui <- navbarPage(
            affect its project success rate (as measured by funding)?"),
         plotlyOutput("highest"),
         p(
-          "The data presented are interesting to say the least, different countries
-          excel in different areas, they all seem to have an equal potential source
-          of what, thereotically, would produce the highest rates of successful
-          projects."
+          "The data presented are interesting to say the least, different
+          countries excel in different areas, they all seem to have an equal
+          potential source of what, thereotically, would produce the highest
+          rates of successful projects."
         ),
         p(h3("Conclusion: ")),
         p(
-          "The answer varies. Data for mean statistic proves no real arguments as
-          it fluctuates greatly across countries. In the case of Singapore and Hong
-          Kong, countries with higher fulfillment rate in their funding ratio
-          have high success rates. In the case of the US and UK, countries with ",
+          "The answer varies. Data for mean statistic proves no real arguments
+          as it fluctuates greatly across countries. In the case of Singapore
+          and Hong Kong, countries with higher fulfillment rate in their funding
+          ratio have high success rates. In the case of the US and UK, countries
+          with ",
           tags$em("more"), " resources (higher number of backers, amount
           pledged relative to goal, number of overall planned projects, etc.)
           have high success rates. In the case of Japan, countries with fewer
-          projects to begin with have higher chance to boost their overall success
-          rate. No single country dominates across all data enough to determine a
-          definite answer. So to reitirate, the country origin do not determine a
-          project's success rate, there are many other factors to consider that
-          affect the success rate of a project: government funding, advertisement,
-          country economy, backers, audience interest, etc."
+          projects to begin with have higher chance to boost their overall
+          success rate. No single country dominates across all data enough to
+          determine a definite answer. So to reitirate, the country origin do
+          not determine a project's success rate, there are many other factors
+          to consider thataffect the success rate of a project: government
+          funding, advertisement,country economy, backers, audience interest,
+          etc."
         )
       )
     )
@@ -284,22 +294,26 @@ ui <- navbarPage(
         p("But it is interesting to note that in every category, Number
         of Backers and the Pledged Amount (USD) are positively correlated. So,
         attracting more backers can provide students with more funds. This might
-        also mean that having low number of backers brings only little funds. But
-        that is not the cvase with every project as there are projects with low
-        number of backers but high investments. So we need to explore more variables
-        using better statistical analysis techniques to get more insight into the
-          relation between Number of Backers and Pledged Amount (USD)")
+        also mean that having low number of backers brings only little funds.
+        But that is not the cvase with every project as there are projects with
+        low number of backers but high investments. So we need to explore more
+        variables using better statistical analysis techniques to get more
+        insight into the relation between Number of Backers and Pledged Amount
+        (USD)")
       ),
       mainPanel(
         strong("Description"),
-        textOutput("description"),
+        p("This plot simultaneously explores the relation between the three
+        variables: Number of Backers, Pledged Amount (USD) and Time Taken for
+        the project completion. The primary goal is to dteermine if Time
+        affects the other two variables in any way."),
         plotlyOutput("threed"),
         strong("Summary"),
         textOutput("summary")
       )
     )
   ),
-  tabPanel (
+  tabPanel(
     "Data Insights",
     sidebarLayout(
       mainPanel(
@@ -313,22 +327,30 @@ ui <- navbarPage(
       ),
       sidebarPanel(
         choose_maincateg("main_categ1"),
-        sliderInput("year", label = "Years of Interest",
-                    value = range(latest_data$year),
-                    min = range(latest_data$year)[1],
-                    max = range(latest_data$year)[2]),
-        sliderInput("backers", label= "Number of Backers",
-                    value = range(latest_data$backers),
-                    min = range(latest_data$backers)[1],
-                    max = range(latest_data$backers)[2]),
-        sliderInput("pledged", label = "Amount Pledged",
-                    value = range(latest_data$usd_pledged_real),
-                    min = range(latest_data$usd_pledged_real)[1],
-                    max = range(latest_data$usd_pledged_real)[2]),
-        sliderInput("goal", label = "Goal Amount",
-                    value = range(latest_data$usd_goal_real),
-                    min = range(latest_data$usd_goal_real)[1],
-                    max = range(latest_data$usd_goal_real)[2])
+        sliderInput("year",
+          label = "Years of Interest",
+          value = range(latest_data$year),
+          min = range(latest_data$year)[1],
+          max = range(latest_data$year)[2]
+        ),
+        sliderInput("backers",
+          label = "Number of Backers",
+          value = range(latest_data$backers),
+          min = range(latest_data$backers)[1],
+          max = range(latest_data$backers)[2]
+        ),
+        sliderInput("pledged",
+          label = "Amount Pledged",
+          value = range(latest_data$usd_pledged_real),
+          min = range(latest_data$usd_pledged_real)[1],
+          max = range(latest_data$usd_pledged_real)[2]
+        ),
+        sliderInput("goal",
+          label = "Goal Amount",
+          value = range(latest_data$usd_goal_real),
+          min = range(latest_data$usd_goal_real)[1],
+          max = range(latest_data$usd_goal_real)[2]
+        )
       )
     )
   )

@@ -107,8 +107,10 @@ server <- function(input, output) {
     avg <- avg_by_category[avg_by_category$main_category == category, "Mean"]
     med <- avg_by_category[avg_by_category$main_category == category, "Median"]
 
-    phrase <- paste0("mean, median goal for ", category, ": $", round(avg),
-                     ", $", round(med))
+    phrase <- paste0(
+      "mean, median goal for ", category, ": $", round(avg),
+      ", $", round(med)
+    )
     phrase
   }
 
@@ -125,15 +127,22 @@ server <- function(input, output) {
   dataset <- data
 
   # Convert ISO2 to ISO3 and combine into the dataset
-  iso_json <- as.data.frame(fromJSON("http://country.io/iso3.json"), stringsAsFactors = F)
-  iso_convert <- data.frame("ISO2" = colnames(iso_json), "ISO3" = unname(unlist(iso_json[1, ])))
+  iso_json <- as.data.frame(fromJSON("http://country.io/iso3.json"),
+    stringsAsFactors = F
+  )
+  iso_convert <- data.frame(
+    "ISO2" = colnames(iso_json),
+    "ISO3" = unname(unlist(iso_json[1, ]))
+  )
   dataset <- suppressWarnings(
     left_join(dataset, iso_convert, by = c("country" = "ISO2"))
   )
 
   # Convert and combine ISO3 into country's full name
+  link_1 <- "https://raw.githubusercontent.com/lukes/ISO-3166-Countries"
+  link_2 <- "-with-Regional-Codes/master/slim-3/slim-3.json"
   country_names <- fromJSON(
-    "https://raw.githubusercontent.com/lukes/ISO-3166-Countries-with-Regional-Codes/master/slim-3/slim-3.json"
+    paste0(link_1, link_2)
   )
   country_names <- country_names %>%
     dplyr::rename(country_full = "name") %>%
@@ -143,7 +152,9 @@ server <- function(input, output) {
   )
 
   dataset <- dataset %>%
-    mutate(country_full = ifelse(is.na(country_full), "Other", country_full)) %>%
+    mutate(country_full = ifelse(is.na(country_full), "Other",
+      country_full
+    )) %>%
     select(
       name, category, main_category, state, backers,
       usd_pledged_real, usd_goal_real, ISO3, country_full
@@ -270,31 +281,47 @@ server <- function(input, output) {
 
   ########################## Ruthvik ##########################
 
+  # renders the table containing the information desired by the user based on
+  # the inputs (year, category and other information) he has given.
   output$table <- renderTable({
     year_data <- cleaned %>%
       mutate(year2 = format(cleaned$date, "%Y"))
     display_data <- year_data %>%
-      filter(main_category == input$main_categ1,
-             year >= input$year[1] & year <= input$year[2],
-             backers >= input$backers[1] & backers <= input$backers[2],
-             usd_pledged_real >= input$pledged[1] &
-               usd_pledged_real <= input$pledged[2],
-             usd_goal_real >= input$goal[1] &
-               usd_goal_real <= input$goal[2]) %>%
-      select(name, category, main_category, backers, country,
-             usd_pledged_real, usd_goal_real, year2) %>%
+      filter(
+        main_category == input$main_categ1,
+        year >= input$year[1] & year <= input$year[2],
+        backers >= input$backers[1] & backers <= input$backers[2],
+        usd_pledged_real >= input$pledged[1] &
+          usd_pledged_real <= input$pledged[2],
+        usd_goal_real >= input$goal[1] &
+          usd_goal_real <= input$goal[2]
+      ) %>%
+      select(
+        name, category, main_category, backers, country,
+        usd_pledged_real, usd_goal_real, year2
+      ) %>%
       head(30)
 
-    colnames(display_data) <- c("Name", "Category", "Main Category",
-                                "Number of Backers", "Country",
-                                "Amount Pledged (USD)", "Goal Amount (USD)",
-                                "Year")
+    colnames(display_data) <- c(
+      "Name", "Category", "Main Category",
+      "Number of Backers", "Country",
+      "Amount Pledged (USD)", "Goal Amount (USD)",
+      "Year"
+    )
     display_data
-  }, width = 80, bordered = F)
+  },
+  width = 80, striped = T, bordered = T
+  )
 
   time_data$deadline <- as.Date(time_data$deadline, format = "%Y-%m-%d")
-  time_data$time <- ( (time_data$deadline - time_data$date))
+  time_data$time <- (
+    (time_data$deadline - time_data$date)
+  )
 
+  # renders the 3d plot that disoplays the relation between the the time for
+  # the project completion, number of backers and the total pledged amount in
+  # USD.
+  # takes the category as input from the user
   output$threed <- renderPlotly({
     categorised <- time_data %>%
       filter(main_category == input$main_categ2)
@@ -306,25 +333,27 @@ server <- function(input, output) {
       z = ~time,
       color = ~category,
       hoverinfo = "text",
-      text = ~paste("</br> Category: ", category,
-                    "</br> Pledged Amount (USD): ", usd_pledged_real,
-                    "</br> Number of backers: ", backers,
-                    "</br> Time: ", time)
-      ) %>%
+      text = ~ paste(
+        "</br> Category: ", category,
+        "</br> Pledged Amount (USD): ", usd_pledged_real,
+        "</br> Number of backers: ", backers,
+        "</br> Time: ", time
+      )
+    ) %>%
       add_markers() %>%
       layout(
         title = "Pledged Amount",
         scene = list(
-          xaxis =list(title = "Pledged Amount (USD)"),
+          xaxis = list(title = "Pledged Amount (USD)"),
           yaxis = list(title = "Number of backers"),
           zaxis = list(title = "Time"),
           marker = list(color = categorised$category),
           annotations = list(
             x = 1.13,
             y = 1.05,
-            text = 'Miles/(US) gallon',
-            xref = 'paper',
-            yref = 'paper',
+            text = "Miles/(US) gallon",
+            xref = "paper",
+            yref = "paper",
             showarrow = FALSE
           )
         )
@@ -332,20 +361,15 @@ server <- function(input, output) {
     chart
   })
 
-  output$description <- renderText({
-    desc <- "This plot simultaneously explores the relation between the three
-    variables: Number of Backers, Pledged Amount (USD) and Time Taken for the
-    project completion. The primary goal is to dteermine if Time affects the
-    other two variables in any way."
-  })
-
+  # renders the text that displays the correletaion between the pairs of the
+  # three variables
   output$summary <- renderText({
     categorised <- time_data %>%
       filter(main_category == input$main_categ2)
 
-    reg1 <- lm(backers~time, data = categorised)
-    reg2 <- lm(usd_pledged_real~time, data = categorised)
-    reg3 <- lm(usd_pledged_real~backers, data = categorised)
+    reg1 <- lm(backers ~ time, data = categorised)
+    reg2 <- lm(usd_pledged_real ~ time, data = categorised)
+    reg3 <- lm(usd_pledged_real ~ backers, data = categorised)
 
     r1 <- round(sqrt(summary(reg1)$r.squared), 2)
     r2 <- round(sqrt(summary(reg2)$r.squared), 2)
@@ -353,10 +377,10 @@ server <- function(input, output) {
 
     desc_1 <- paste0("The correlation between Number of Backers and Time taken
                    for the completion of the project is ", r1, ". ")
-    desc_2 <- paste0("The correlation between Pledged Amount (USD) and Time taken
-                   for the completion of the project is ", r2, ". ")
-    desc_3 <- paste0("The correlation between Pledged Amount (USD) and Number of
-                   Backers is ", r3, ".")
+    desc_2 <- paste0("The correlation between Pledged Amount (USD) and Time
+                   taken for the completion of the project is ", r2, ". ")
+    desc_3 <- paste0("The correlation between Pledged Amount (USD) and Number
+                   of Backers is ", r3, ".")
 
     paste(desc_1, desc_2, desc_3)
   })
