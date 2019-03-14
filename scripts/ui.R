@@ -65,8 +65,8 @@ ui <- navbarPage(
     tags$li("Does the country from which a Kickstarter is launched
               significantly affect its project success rate 
             (as measured by funding)?"),
-    tags$li("Does the Number of Backers or the amount being pledged by them 
-            depend on the time for the project completion?")
+    tags$li("Are the number of backers or the amount pledged affected by the
+            time duration of the project?")
   ),
   tabPanel(
     "Category",
@@ -231,7 +231,7 @@ ui <- navbarPage(
         p("Hong Kong, Austria, and Singapore are the top contenders for having
             the highest funding relatives to their projected goals"),
         p(strong("Hypothesis: "), "Countries with higher funding ratio means
-          higher number of projects with more than enough resources needed to
+          there are more projects with more than enough resources needed to
           accomplish their goals, which translates to higher success rates."),
         h2("To Answer the Question?"),
         h4("Does the country from which a Kickstarter is launched significantly
@@ -245,18 +245,19 @@ ui <- navbarPage(
         ),
         p(h3("Conclusion: ")),
         p(
-          "The answer varies, especially since the data for mean statistic varies
-          greatly across countries. In the case of Singapore and Hong Kong,
-          countries with higher fulfillment rate in their funding ratio will
-          have a higher success rate. In the case of the US and UK, countries with ",
-          tags$em("abundant resources"), "(higher number of backers, amount
-          pledged compared to goal, number of overall planned projects, etc.)
-          are bound to receive higher success rates. In the case of Japan, their rate
-          is simply high because they have very few projects to begin with. No
-          single country dominates across all data enough to determine a definite
-          success rates for projects base on countries. There are too many factors to
-          consider that affect the success rate of a project: government funding,
-          number of projects, economy, backers, audience interest, etc."
+          "The answer varies. Data for mean statistic proves no real arguments as
+          it fluctuates greatly across countries. In the case of Singapore and Hong 
+          Kong, countries with higher fulfillment rate in their funding ratio
+          have high success rates. In the case of the US and UK, countries with ",
+          tags$em("more"), " resources (higher number of backers, amount
+          pledged relative to goal, number of overall planned projects, etc.)
+          have high success rates. In the case of Japan, countries with fewer
+          projects to begin with have higher chance to boost their overall success
+          rate. No single country dominates across all data enough to determine a 
+          definite answer. So to reitirate, the country origin do not determine a 
+          project's success rate, there are many other factors to consider that 
+          affect the success rate of a project: government funding, advertisement,
+          country economy, backers, audience interest, etc."
         )
       )
     )
@@ -277,7 +278,7 @@ ui <- navbarPage(
         completion. So, the backers are really interested in the outcome of 
         the project rather than the early completion of them. Hence the 
         students need not be thinking only about quick projects which gives 
-        them better scope to apply their knowledge and expertise"),
+        them better scope to apply their knowledge and expertise."),
         
         p("But it is interesting to note that in every category, Number
         of Backers and the Pledged Amount (USD) are positively correlated. So, 
