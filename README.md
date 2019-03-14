@@ -1,6 +1,9 @@
 # Project Proposal
 *Ruthvik, Cynthia, & Talon*
 
+Here is the link to the Shiny App:
+https://rosefinch32.shinyapps.io/scripts/
+
 ## Project Description
 Increasingly, crowdfunding is being used by startups -- and even more established companies -- to fund their projects; sometimes quite ambitious ones. We are interested in learning more about the predictors of a successful crowdfunding project, and to this end, we have decided to use [this](https://www.kaggle.com/kemical/kickstarter-projects) robust dataset of Kickstarter projects through 2018. The data was collected by [Mikael Mouille](https://twitter.com/keamlic); a script by [Anton Savchenko](https://www.researchgate.net/profile/Anton_Savchenko) was used to handle USD conversion rates. It is published on Kaggle.
 
