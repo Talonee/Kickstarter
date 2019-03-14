@@ -14,22 +14,29 @@ server <- function(input, output) {
   data <- read.csv("data/ks-data.csv", stringsAsFactors = F)
 
   data$date <- sapply(strsplit(data$launched, " "), head, 1)
-
+  
+  # I always want the data to have a date column
   cleaned <- data %>%
     mutate(date = as.Date(date, format = "%Y-%m-%d"))
-
+  
   time_data <- cleaned
-
+  
+  # I also always want to have a column of just the years
   cleaned$year <- as.numeric(format(cleaned$date, "%Y"))
 
+  # and in both tables, i want the data to be filtered between
+  # years 2011 and 2017, as this is around the time Kickstarter
+  # became a genuinely successful website
   cleaned <- cleaned %>%
     filter(year > "2011" & year <= "2017")
 
+  # this is the popularity table
   popularity <- cleaned %>%
     group_by(year, main_category) %>%
     count() %>%
     arrange(year)
 
+  # we wanna add columns for each year to make datapoints easier to plot
   shaped_popularity <- dcast(popularity, main_category ~ year)
 
   colnames(shaped_popularity) <- c(
@@ -42,6 +49,7 @@ server <- function(input, output) {
     "proj_2017"
   )
 
+  # the chart itself
   output$popularity <- renderPlotly({
     p <- plot_ly(shaped_popularity,
       x = ~category,
@@ -59,7 +67,9 @@ server <- function(input, output) {
         yaxis = list(title = "# of Projects")
       )
   })
-
+  
+  # this is a similar process to the popularity data manipulation, except
+  # we are using pct funded.
   success <- cleaned %>%
     mutate(pct_funded = (as.numeric(usd_pledged_real) /
       as.numeric(usd_goal_real) + 0.000001) * 100) %>%
@@ -99,6 +109,8 @@ server <- function(input, output) {
       )
   })
 
+  # this outputs a string containing data on the mean and median
+  # for every main category
   goal_info <- function(category) {
     avg_by_category <- cleaned %>%
       group_by(main_category) %>%
@@ -114,6 +126,7 @@ server <- function(input, output) {
     phrase
   }
 
+  # call it a few times
   output$technology <- renderText({
     goal_info("Technology")
   })
