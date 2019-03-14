@@ -63,37 +63,10 @@ ui <- navbarPage(
                each year? Does a category's popularity by number of projects
                effect its funding?"),
     tags$li("Does the country from which a Kickstarter is launched
-              significantly affect its project success rate (as measured by funding)?"),
-    tags$li("RUTHVIK PUT YOUR QUESTION HERE")
-  ),
-  tabPanel (
-    "Data Insights",
-    sidebarLayout(
-      mainPanel(
-        style = "overflow-y:scroll; max-height: 1000px",
-        titlePanel("Kickstarter Data (2009-2018)"),
-        tableOutput("table")
-      ),
-      sidebarPanel(
-        choose_maincateg("main_categ1"),
-        sliderInput("year", label = "Years of Interest",
-                    value = range(latest_data$year),
-                    min = range(latest_data$year)[1],
-                    max = range(latest_data$year)[2]),
-        sliderInput("backers", label= "Number of Backers",
-                    value = range(latest_data$backers),
-                    min = range(latest_data$backers)[1],
-                    max = range(latest_data$backers)[2]),
-        sliderInput("pledged", label = "Amount Pledged",
-                    value = range(latest_data$usd_pledged_real),
-                    min = range(latest_data$usd_pledged_real)[1],
-                    max = range(latest_data$usd_pledged_real)[2]),
-        sliderInput("goal", label = "Goal Amount",
-                    value = range(latest_data$usd_goal_real),
-                    min = range(latest_data$usd_goal_real)[1],
-                    max = range(latest_data$usd_goal_real)[2])
-      )
-    )
+              significantly affect its project success rate 
+            (as measured by funding)?"),
+    tags$li("Does the Number of Backers or the amount being pledged by them 
+            depend on the time for the project completion?")
   ),
   tabPanel(
     "Category",
@@ -294,10 +267,66 @@ ui <- navbarPage(
     titlePanel("Determining the Pledged Amount"),
     sidebarLayout(
       sidebarPanel(
-        choose_maincateg("main_categ2")
+        choose_maincateg("main_categ2"),
+        
+        strong("Overall Interprepretation"),
+        
+        p("Looking at the relations between the three variables for different
+        categories confirms us that there is no relation between the Number
+        of Backers or the Pledged Amount and the Time taken for project 
+        completion. So, the backers are really interested in the outcome of 
+        the project rather than the early completion of them. Hence the 
+        students need not be thinking only about quick projects which gives 
+        them better scope to apply their knowledge and expertise"),
+        
+        p("But it is interesting to note that in every category, Number
+        of Backers and the Pledged Amount (USD) are positively correlated. So, 
+        attracting more backers can provide students with more funds. This might
+        also mean that having low number of backers brings only little funds. But
+        that is not the cvase with every project as there are projects with low 
+        number of backers but high investments. So we need to explore more variables
+        using better statistical analysis techniques to get more insight into the 
+          relation between Number of Backers and Pledged Amount (USD)")
       ),
       mainPanel(
-        plotlyOutput("threed")
+        strong("Description"),
+        textOutput("description"),
+        plotlyOutput("threed"),
+        strong("Summary"),
+        textOutput("summary")
+      )
+    )
+  ),
+  tabPanel (
+    "Data Insights",
+    sidebarLayout(
+      mainPanel(
+        style = "overflow-y:scroll; max-height: 1000px",
+        h4("Here is a convenient summary table that allows you to
+               filter individual projects. It helps the user to look at
+               specific important things like projects with zero backers
+               or projects with lowest pledged amount"),
+        h4(strong("Kickstarter Projects (2009-2018)")),
+        tableOutput("table")
+      ),
+      sidebarPanel(
+        choose_maincateg("main_categ1"),
+        sliderInput("year", label = "Years of Interest",
+                    value = range(latest_data$year),
+                    min = range(latest_data$year)[1],
+                    max = range(latest_data$year)[2]),
+        sliderInput("backers", label= "Number of Backers",
+                    value = range(latest_data$backers),
+                    min = range(latest_data$backers)[1],
+                    max = range(latest_data$backers)[2]),
+        sliderInput("pledged", label = "Amount Pledged",
+                    value = range(latest_data$usd_pledged_real),
+                    min = range(latest_data$usd_pledged_real)[1],
+                    max = range(latest_data$usd_pledged_real)[2]),
+        sliderInput("goal", label = "Goal Amount",
+                    value = range(latest_data$usd_goal_real),
+                    min = range(latest_data$usd_goal_real)[1],
+                    max = range(latest_data$usd_goal_real)[2])
       )
     )
   )
