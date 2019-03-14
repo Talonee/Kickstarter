@@ -17,7 +17,7 @@ server <- function(input, output) {
 
   cleaned <- data %>%
     mutate(date = as.Date(date, format = "%Y-%m-%d"))
-  
+
   time_data <- cleaned
 
   cleaned$year <- as.numeric(format(cleaned$date, "%Y"))
@@ -291,14 +291,14 @@ server <- function(input, output) {
                                 "Year")
     display_data
   }, width = 80, bordered = F)
-  
+
   time_data$deadline <- as.Date(time_data$deadline, format = "%Y-%m-%d")
   time_data$time <- ( (time_data$deadline - time_data$date))
-  
+
   output$threed <- renderPlotly({
     categorised <- time_data %>%
       filter(main_category == input$main_categ2)
-    
+
     chart <- plot_ly(
       data = categorised,
       x = ~usd_pledged_real,
@@ -309,7 +309,7 @@ server <- function(input, output) {
       text = ~paste("</br> Category: ", category,
                     "</br> Pledged Amount (USD): ", usd_pledged_real,
                     "</br> Number of backers: ", backers,
-                    "</br> Time: ", time) 
+                    "</br> Time: ", time)
       ) %>%
       add_markers() %>%
       layout(
@@ -331,33 +331,33 @@ server <- function(input, output) {
       )
     chart
   })
-  
+
   output$description <- renderText({
     desc <- "This plot simultaneously explores the relation between the three
     variables: Number of Backers, Pledged Amount (USD) and Time Taken for the
     project completion. The primary goal is to dteermine if Time affects the
     other two variables in any way."
   })
-  
+
   output$summary <- renderText({
     categorised <- time_data %>%
       filter(main_category == input$main_categ2)
-    
+
     reg1 <- lm(backers~time, data = categorised)
     reg2 <- lm(usd_pledged_real~time, data = categorised)
     reg3 <- lm(usd_pledged_real~backers, data = categorised)
-    
+
     r1 <- round(sqrt(summary(reg1)$r.squared), 2)
     r2 <- round(sqrt(summary(reg2)$r.squared), 2)
     r3 <- round(sqrt(summary(reg3)$r.squared), 2)
-    
+
     desc_1 <- paste0("The correlation between Number of Backers and Time taken
                    for the completion of the project is ", r1, ". ")
     desc_2 <- paste0("The correlation between Pledged Amount (USD) and Time taken
                    for the completion of the project is ", r2, ". ")
-    desc_3 <- paste0("The correlation between Pledged Amount (USD) and Number of 
+    desc_3 <- paste0("The correlation between Pledged Amount (USD) and Number of
                    Backers is ", r3, ".")
-    
+
     paste(desc_1, desc_2, desc_3)
   })
 }

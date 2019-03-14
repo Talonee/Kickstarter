@@ -15,16 +15,16 @@ cleaned$year <- as.numeric(format(cleaned$date, "%Y"))
 latest_data <- cleaned %>% filter(year != 1970)
 
 choose_maincateg <- function(input_name){
-  selectInput(input_name, 
+  selectInput(input_name,
               label = "Choose the Main Category",
               choices = unique(latest_data$main_category))
 }
-  
+
 choose_categ <- selectInput("category", label = "Choose the Category",
                             choices = unique(latest_data$category))
 
 ui <- navbarPage(
-  theme = shinytheme("sandstone"),
+  theme = shinytheme("cyborg"),
   "Kickstarter Success",
   tabPanel(
     "Overview",
@@ -53,9 +53,10 @@ ui <- navbarPage(
     p(),
     tags$h3("Our Data"),
     tags$p("We are using a very large dataset -- more than 300,000 rows -- of
-              Kickstarter data, published on Kaggle by Mikael Mouille, with
-              assistance from Anton Savchenko. While the data is technically
-              through 2018, it was collected early in the year, so the last
+              Kickstarter data, published on, ", tags$a(href = "google.com", "Kaggle"),
+              "by", tags$a(href="https://www.kaggle.com/kemical", "Mikael Mouille"), 
+              "with assistance from Anton Savchenko. While the data is technically
+              through 2018, it was collected early in the year, so the last 
               complete year of data is 2017. Using this dataset, we hope to
               answer the following."),
     tags$h3("Questions:"),
@@ -63,7 +64,7 @@ ui <- navbarPage(
                each year? Does a category's popularity by number of projects
                effect its funding?"),
     tags$li("Does the country from which a Kickstarter is launched
-              significantly affect its project success rate 
+              significantly affect its project success rate
             (as measured by funding)?"),
     tags$li("Are the number of backers or the amount pledged affected by the
             time duration of the project?")
@@ -246,16 +247,16 @@ ui <- navbarPage(
         p(h3("Conclusion: ")),
         p(
           "The answer varies. Data for mean statistic proves no real arguments as
-          it fluctuates greatly across countries. In the case of Singapore and Hong 
+          it fluctuates greatly across countries. In the case of Singapore and Hong
           Kong, countries with higher fulfillment rate in their funding ratio
           have high success rates. In the case of the US and UK, countries with ",
           tags$em("more"), " resources (higher number of backers, amount
           pledged relative to goal, number of overall planned projects, etc.)
           have high success rates. In the case of Japan, countries with fewer
           projects to begin with have higher chance to boost their overall success
-          rate. No single country dominates across all data enough to determine a 
-          definite answer. So to reitirate, the country origin do not determine a 
-          project's success rate, there are many other factors to consider that 
+          rate. No single country dominates across all data enough to determine a
+          definite answer. So to reitirate, the country origin do not determine a
+          project's success rate, there are many other factors to consider that
           affect the success rate of a project: government funding, advertisement,
           country economy, backers, audience interest, etc."
         )
@@ -269,24 +270,24 @@ ui <- navbarPage(
     sidebarLayout(
       sidebarPanel(
         choose_maincateg("main_categ2"),
-        
+
         strong("Overall Interprepretation"),
-        
+
         p("Looking at the relations between the three variables for different
         categories confirms us that there is no relation between the Number
-        of Backers or the Pledged Amount and the Time taken for project 
-        completion. So, the backers are really interested in the outcome of 
-        the project rather than the early completion of them. Hence the 
-        students need not be thinking only about quick projects which gives 
+        of Backers or the Pledged Amount and the Time taken for project
+        completion. So, the backers are really interested in the outcome of
+        the project rather than the early completion of them. Hence the
+        students need not be thinking only about quick projects which gives
         them better scope to apply their knowledge and expertise."),
-        
+
         p("But it is interesting to note that in every category, Number
-        of Backers and the Pledged Amount (USD) are positively correlated. So, 
+        of Backers and the Pledged Amount (USD) are positively correlated. So,
         attracting more backers can provide students with more funds. This might
         also mean that having low number of backers brings only little funds. But
-        that is not the cvase with every project as there are projects with low 
+        that is not the cvase with every project as there are projects with low
         number of backers but high investments. So we need to explore more variables
-        using better statistical analysis techniques to get more insight into the 
+        using better statistical analysis techniques to get more insight into the
           relation between Number of Backers and Pledged Amount (USD)")
       ),
       mainPanel(
