@@ -31,3 +31,13 @@ Proposed implementations for other plots:
 We are also interested in creating a 3D plot, but this is tentative since none of us have worked with one before.
 
 For this project, we will be using Shiny and -- potentially -- Plotly. We anticipate that using Shiny will present some challenges, since none of us have as much experience with it as with, say, ggplot2. 
+
+## Results
+
+These are few sample images of our results. More can be found on our Shiny App link. 
+
+![Sample1](assets/sample3.png)
+
+![Sample2](assets/sample2.png)
+
+![Sample3](assets/sample1.png)
