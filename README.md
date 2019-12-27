@@ -36,8 +36,8 @@ For this project, we will be using Shiny and -- potentially -- Plotly. We antici
 
 These are few sample images of our results. More can be found on our Shiny App link. 
 
-![Sample1](assets/sample3.png)
+![Sample1](scripts/data/sample3.png)
 
-![Sample2](assets/sample2.png)
+![Sample2](scripts/data/sample2.png)
 
-![Sample3](assets/sample1.png)
+![Sample3](scripts/data/sample1.png)
